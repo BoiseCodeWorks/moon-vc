@@ -6,11 +6,31 @@ function _draw() {
   document.getElementById("game").innerHTML = /*html*/ `
   <div>
     <h3>${STORE.State.cheese.toFixed(2)}</h3>
-    <button onclick="app.gameController.dig()">DIG</button>
-    <button onclick="app.gameController.buy('pick')">Buy Pick</button>
-    <button onclick="app.gameController.buy('laser')">Buy Laser</button>
+    <div class="d-flex justify-content-around">
+      ${_drawUpgrades()}
+    </div>
   </div>
   `;
+}
+
+function _drawUpgrades() {
+  let template = "";
+
+  for (let key in STORE.State.clickMods) {
+    let upgrade = STORE.State.clickMods[key];
+    let disabled = "";
+    if (upgrade.price > STORE.State.cheese) {
+      disabled = "disabled";
+    }
+    template += /*html*/ `
+      <div class="${disabled}">
+        <h5>Quantity: ${upgrade.quantity}</h5>
+        <h5>Price: ${upgrade.price}</h5>
+        <button ${disabled} onclick="app.gameController.buy('${key}')">Buy ${upgrade.name}</button>
+      </div>
+    `;
+  }
+  return template;
 }
 
 function _start() {
